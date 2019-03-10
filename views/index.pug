@@ -1,0 +1,43 @@
+html
+  head
+    title='Fig'
+    style(type='text/css').
+      .gifs {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      .gif {
+        display: flex;
+        height: 120px;
+        max-width: 300px;
+        min-width: 200px;
+        background-repeat: no-repeat;
+      }
+      .gif:hover {
+        cursor: pointer;
+      }
+
+  body
+    div(class="gifs")
+      each gif in gifs
+        div(
+          class=`gif`
+          style=`background-image:url(${gif.link});`
+          data-link=gif.link
+        )
+    script.
+      document.querySelector('.gifs').addEventListener('click', e => {
+        navigator.permissions.query({name: "clipboard-write"}).then(result => {
+          if (result.state == "granted" || result.state == "prompt") {
+            updateClipboard(e.target.dataset.link)
+          }
+        });
+      })
+      function updateClipboard(newClip) {
+        navigator.clipboard.writeText(newClip).then(function() {
+          /* clipboard successfully set */
+        }, function() {
+        /* clipboard write failed */
+        });
+      }
+
